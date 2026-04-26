@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+# Database
+*.db
+
+# Uploads
+uploads/
+
+# Generated files
+static/wordcloud.png
