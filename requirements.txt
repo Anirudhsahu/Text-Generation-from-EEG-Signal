@@ -1,0 +1,5 @@
+flask
+werkzeug
+wordcloud
+matplotlib
+sqlite3
