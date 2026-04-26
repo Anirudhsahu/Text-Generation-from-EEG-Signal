@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-title">Analytics Dashboard</div>
+
+<div class="row g-4">
+
+    <!-- WORD CLOUD -->
+    <div class="col-12">
+        <div class="card-modern p-4">
+            <h5 class="mb-3">☁️ Word Cloud</h5>
+            <img src="{{ url_for('static', filename='wordcloud.png') }}" 
+                 class="img-fluid rounded">
+        </div>
+    </div>
+
+    <!-- TOP KEYWORDS -->
+    <div class="col-md-6">
+        <div class="card-modern p-4 h-100">
+            <h5 class="mb-3">📊 Top Keywords</h5>
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+
+    <!-- PREDICTION LENGTH -->
+    <div class="col-md-6">
+        <div class="card-modern p-4 h-100">
+            <h5 class="mb-3">📈 Prediction Length Trend</h5>
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const labels = {{ labels | tojson }};
+    const values = {{ values | tojson }};
+    const dates = {{ dates | tojson }};
+    const lengths = {{ lengths | tojson }};
+
+    // BAR CHART
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Top Words',
+                data: values,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: "#cbd5f5" }
+                },
+                y: {
+                    ticks: { color: "#cbd5f5" }
+                }
+            }
+        }
+    });
+
+    // LINE CHART
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Prediction Length',
+                data: lengths,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: { color: "#cbd5f5" }
+                },
+                y: {
+                    ticks: { color: "#cbd5f5" }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
+
+<div class="page-title">Prediction History</div>
+
+{% if records and records|length > 0 %}
+
+<div class="row g-4">
+
+    {% for record in records %}
+    <div class="col-md-6">
+
+        <div class="card-modern p-4 h-100">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <small class="text-info">
+                    📄 {{ record['filename'] }}
+                </small>
+                <small class="text-secondary">
+                    {{ record['created_at'] }}
+                </small>
+            </div>
+
+            <!-- RESULT -->
+            <div class="prediction-box p-3 mb-3">
+                {{ record['result'] }}
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex justify-content-between align-items-center">
+
+                <button class="btn btn-outline-light btn-sm" onclick="copyText(this)">
+                    <i class="fas fa-copy me-1"></i> Copy
+                </button>
+
+                <span class="text-secondary small">
+                    #{{ loop.index }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="card-modern p-5 text-center">
+    <h4>No History Found</h4>
+    <p class="text-secondary">You haven’t made any predictions yet.</p>
+    <a href="{{ url_for('predict') }}" class="btn btn-custom mt-2">
+        Make Your First Prediction
+    </a>
+</div>
+
+{% endif %}
+
+<style>
+.prediction-box {
+    background: #0f172a;
+    border-radius: 10px;
+    color: #e2e8f0;
+    line-height: 1.6;
+    max-height: 150px;
+    overflow-y: auto;
+}
+</style>
+
+<script>
+function copyText(btn) {
+    const text = btn.closest(".card-modern").querySelector(".prediction-box").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied!");
+}
+</script>
+
+{% endblock %}

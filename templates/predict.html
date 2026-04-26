@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction{% endblock %}
+
+{% block content %}
+
+<div class="page-title">EEG → Text Prediction</div>
+
+<div class="row g-4">
+
+    <!-- LEFT: UPLOAD -->
+    <div class="col-md-5">
+        <div class="card-modern p-4">
+
+            <h5 class="mb-3">📂 Upload EEG File</h5>
+
+            <form method="POST" action="/predict" enctype="multipart/form-data" id="uploadForm">
+
+                <!-- DRAG DROP -->
+                <div class="upload-box mb-3" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt fa-2x mb-2 text-info"></i>
+                    <p class="mb-1">Drag & Drop your .pkl file</p>
+                    <small class="text-secondary">or click to browse</small>
+                    <input type="file" name="file" id="fileInput" accept=".pkl" hidden required>
+                </div>
+
+                <div id="fileName" class="text-info small mb-3"></div>
+
+                <button type="submit" class="btn btn-custom w-100" id="submitBtn">
+                    Analyze EEG
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- RIGHT: RESULT -->
+    <div class="col-md-7">
+        <div class="card-modern p-4 h-100">
+
+            <h5 class="mb-3">🧠 AI Output</h5>
+
+            <!-- LOADING -->
+            <div id="loading" class="text-center d-none">
+                <div class="spinner-border text-info mb-2"></div>
+                <p class="text-secondary">Processing EEG data...</p>
+            </div>
+
+            <!-- RESULT -->
+            {% if prediction %}
+            <div id="resultBox">
+                <div class="prediction-box p-3 mb-3">
+                    {{ prediction }}
+                </div>
+
+                <button class="btn btn-outline-light btn-sm" onclick="copyText()">
+                    <i class="fas fa-copy me-1"></i> Copy
+                </button>
+            </div>
+            {% else %}
+            <p class="text-secondary">Your prediction will appear here after analysis.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* Upload box */
+.upload-box {
+    border: 2px dashed #38bdf8;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    background: #0f172a;
+}
+
+.upload-box:hover {
+    background: #1e293b;
+}
+
+/* Prediction box */
+.prediction-box {
+    background: #0f172a;
+    border-radius: 10px;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+</style>
+
+<script>
+// Drag & Drop
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", () => {
+    fileName.innerText = fileInput.files[0].name;
+});
+
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.background = "#1e293b";
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.style.background = "#0f172a";
+});
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    fileInput.files = e.dataTransfer.files;
+    fileName.innerText = e.dataTransfer.files[0].name;
+});
+
+// Loading state
+document.getElementById("uploadForm").addEventListener("submit", () => {
+    document.getElementById("loading").classList.remove("d-none");
+});
+
+// Copy text
+function copyText() {
+    const text = document.querySelector(".prediction-box").innerText;
+    navigator.clipboard.writeText(text);
+    alert("Copied to clipboard!");
+}
+</script>
+
+{% endblock %}
