@@ -3,3 +3,4 @@ werkzeug
 wordcloud
 matplotlib
 sqlite3
+gunicorn
